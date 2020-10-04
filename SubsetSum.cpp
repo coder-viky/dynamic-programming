@@ -1,44 +1,50 @@
-// C++ program to print the count of 
-// subsets with sum equal to the given value X 
-
-#include <iostream> 
+// C++ implementation of the approach 
+#include <bits/stdc++.h> 
 using namespace std; 
 
-// Recursive function to return the count 
-// of subsets with sum equal to the given value 
-int subsetSum(int arr[], int n, int i, 
-			int sum, int count) 
-{ 
-	// The recursion is stopped at N-th level 
-	// where all the subsets of the given array 
-	// have been checked 
-	if (i == n) { 
+#define maxN 20 
+#define maxSum 50 
+#define minSum 50 
+#define base 50 
 
-		// Incrementing the count if sum is 
-		// equal to 0 and returning the count 
-		if (sum == 0) { 
-			count++; 
-		} 
-		return count; 
+// To store the states of DP 
+int dp[maxN][maxSum + minSum]; 
+bool v[maxN][maxSum + minSum]; 
+
+// Function to return the required count 
+int findCnt(int* arr, int i, int required_sum, int n) 
+{ 
+	// Base case 
+	if (i == n) { 
+		if (required_sum == 0) 
+			return 1; 
+		else
+			return 0; 
 	} 
 
-	// Recursively calling the function for two cases 
-	// Either the element can be counted in the subset 
-	// If the element is counted, then the remaining sum 
-	// to be checked is sum - the selected element 
-	// If the element is not included, then the remaining sum 
-	// to be checked is the total sum 
-	count = subsetSum(arr, n, i + 1, sum - arr[i], count); 
-	count = subsetSum(arr, n, i + 1, sum, count); 
-	return count; 
+	// If the state has been solved before 
+	// return the value of the state 
+	if (v[i][required_sum + base]) 
+		return dp[i][required_sum + base]; 
+
+	// Setting the state as solved 
+	v[i][required_sum + base] = 1; 
+
+	// Recurrence relation 
+	dp[i][required_sum + base] 
+		= findCnt(arr, i + 1, required_sum, n) 
+		+ findCnt(arr, i + 1, required_sum - arr[i], n); 
+	return dp[i][required_sum + base]; 
 } 
 
 // Driver code 
 int main() 
 { 
-	int arr[] = { 1, 2, 3, 4, 5 }; 
-	int sum = 10; 
-	int n = sizeof(arr) / sizeof(arr[0]); 
+	int arr[] = { 3, 3, 3, 3 }; 
+	int n = sizeof(arr) / sizeof(int); 
+	int x = 6; 
 
-	cout << subsetSum(arr, n, 0, sum, 0); 
+	cout << findCnt(arr, 0, x, n); 
+
+	return 0; 
 } 
